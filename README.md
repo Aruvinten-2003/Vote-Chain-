@@ -1,2 +1,3 @@
-# Vote-Chain-
-voting system website that has been develop using blockchain technology
+# Voting System
+
+Blockchain-based voting system using Node.js, Express, MongoDB, and Solidity.

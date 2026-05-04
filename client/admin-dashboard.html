@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VoteChain | Admin Dashboard</title>
+<style>
+    :root{
+        --primary:#0B3D91;
+        --primary-dark:#072A63;
+        --accent:#2ECC71;
+        --danger:#E74C3C;
+        --warning:#F59E0B;
+        --bg:#F4F7FB;
+        --card:#FFFFFF;
+        --text:#1F2937;
+        --muted:#6B7280;
+        --border:#D1D5DB;
+        --shadow:0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;}
+
+    body{
+        font-family:Arial, sans-serif;
+        background:var(--bg);
+        color:var(--text);
+    }
+
+    .layout{
+        display:grid;
+        grid-template-columns:250px 1fr;
+        min-height:100vh;
+    }
+
+    .sidebar{
+        background:var(--primary-dark);
+        color:white;
+        padding:25px 20px;
+    }
+
+    .sidebar h2{
+        margin-bottom:30px;
+    }
+
+    .sidebar a,
+    .sidebar button{
+        display:block;
+        width:100%;
+        color:white;
+        text-decoration:none;
+        margin-bottom:14px;
+        padding:10px 12px;
+        border-radius:10px;
+        background:transparent;
+        border:none;
+        text-align:left;
+        cursor:pointer;
+        font-size:1rem;
+    }
+
+    .sidebar a:hover,
+    .sidebar button:hover{
+        background:rgba(255,255,255,0.12);
+    }
+
+    .main{
+        padding:30px;
+    }
+
+    .top-row{
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        gap:20px;
+        flex-wrap:wrap;
+        margin-bottom:25px;
+    }
+
+    .top-actions{
+        display:flex;
+        gap:12px;
+        flex-wrap:wrap;
+    }
+
+    .stats{
+        display:grid;
+        grid-template-columns:repeat(4, 1fr);
+        gap:20px;
+        margin-bottom:30px;
+    }
+
+    .card{
+        background:white;
+        border-radius:18px;
+        padding:22px;
+        box-shadow:var(--shadow);
+        border:1px solid var(--border);
+    }
+
+    .card h3{
+        color:var(--primary);
+        margin-bottom:8px;
+    }
+
+    .card p{
+        font-size:1.05rem;
+        font-weight:700;
+    }
+
+    .content-grid{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:22px;
+        margin-bottom:22px;
+    }
+
+    label{
+        display:block;
+        margin-bottom:8px;
+        font-weight:600;
+    }
+
+    input{
+        width:100%;
+        padding:12px;
+        border:1px solid var(--border);
+        border-radius:10px;
+        margin-bottom:16px;
+    }
+
+    .btn{
+        background:var(--primary);
+        color:white;
+        border:none;
+        padding:12px 18px;
+        border-radius:10px;
+        font-weight:700;
+        cursor:pointer;
+    }
+
+    .btn:hover{
+        background:var(--primary-dark);
+    }
+
+    .btn.green{
+        background:var(--accent);
+    }
+
+    .btn.red{
+        background:var(--danger);
+    }
+
+    .btn.green:hover,
+    .btn.red:hover{
+        opacity:0.92;
+    }
+
+    .open-btn{
+        background:#16a34a;
+        color:white;
+        border:none;
+        padding:8px 12px;
+        border-radius:8px;
+        cursor:pointer;
+        margin-right:6px;
+    }
+
+    .close-btn{
+        background:var(--warning);
+        color:white;
+        border:none;
+        padding:8px 12px;
+        border-radius:8px;
+        cursor:pointer;
+        margin-right:6px;
+    }
+
+    .delete-btn{
+        background:#dc2626;
+        color:white;
+        border:none;
+        padding:8px 12px;
+        border-radius:8px;
+        cursor:pointer;
+    }
+
+    table{
+        width:100%;
+        border-collapse:collapse;
+        margin-top:15px;
+    }
+
+    table th, table td{
+        padding:12px;
+        border-bottom:1px solid var(--border);
+        text-align:left;
+        vertical-align:top;
+    }
+
+    table th{
+        color:var(--primary);
+    }
+
+    .action-buttons{
+        display:flex;
+        gap:10px;
+        margin-top:15px;
+        flex-wrap:wrap;
+    }
+
+    .card-table{
+        margin-top:22px;
+    }
+
+    .muted-text{
+        color:var(--muted);
+        font-weight:400 !important;
+    }
+
+    .message{
+        display:none;
+        margin-bottom:20px;
+        padding:14px 16px;
+        border-radius:12px;
+        font-size:0.95rem;
+        font-weight:600;
+    }
+
+    .message.success{
+        display:block;
+        background:#dcfce7;
+        color:#166534;
+        border:1px solid #86efac;
+    }
+
+    .message.error{
+        display:block;
+        background:#fee2e2;
+        color:#991b1b;
+        border:1px solid #fca5a5;
+    }
+
+    @media (max-width: 1100px){
+        .layout{
+            grid-template-columns:1fr;
+        }
+
+        .stats,
+        .content-grid{
+            grid-template-columns:1fr;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <h2>VoteChain Admin</h2>
+        <a href="admin-dashboard.html">Dashboard</a>
+        <a href="admin-dashboard.html">Manage Elections</a>
+        <a href="admin-dashboard.html">Manage Candidates</a>
+        <a href="users.html">Users</a>
+        <a href="vote-records.html">Vote Records</a>
+        <a href="results.html">Results</a>
+        <button id="adminLogoutBtn" type="button">Logout</button>
+    </aside>
+
+    <main class="main">
+        <div class="top-row">
+            <div>
+                <h1>Admin Dashboard</h1>
+                <p>Welcome back, <span id="adminWelcomeName">Admin</span></p>
+            </div>
+
+            <div class="top-actions">
+                <button id="connectWalletBtn" class="btn" type="button">Connect MetaMask</button>
+            </div>
+        </div>
+
+        <div id="messageBox" class="message"></div>
+
+        <div class="stats">
+            <div class="card">
+                <h3>Total Users</h3>
+                <p id="totalUsersCount">-</p>
+            </div>
+            <div class="card">
+                <h3>Total Candidates</h3>
+                <p id="totalCandidatesCount">-</p>
+            </div>
+            <div class="card">
+                <h3>Total Votes</h3>
+                <p id="totalVotesCount">-</p>
+            </div>
+            <div class="card">
+                <h3>Election Status</h3>
+                <p id="currentElectionStatus">Unknown</p>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="card">
+                <h3>Admin Wallet</h3>
+                <br>
+                <p class="muted-text">Wallet status: <span id="walletStatus">Not Connected</span></p>
+                <p class="muted-text" style="margin-top:10px;">Address: <span id="walletAddressText">No wallet connected</span></p>
+            </div>
+
+            <div class="card">
+                <h3>Current Election</h3>
+                <br>
+                <p class="muted-text">Title: <span id="currentElectionTitle">No election</span></p>
+                <p class="muted-text" style="margin-top:10px;">Status: <span id="currentElectionStatusMirror">Unknown</span></p>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="card">
+                <h3>Add Candidate</h3>
+                <br>
+                <form id="candidateForm">
+                    <label for="candidateName">Candidate Name</label>
+                    <input id="candidateName" type="text" placeholder="Enter candidate name">
+
+                    <label for="candidateParty">Party</label>
+                    <input id="candidateParty" type="text" placeholder="Enter party name">
+
+                    <label for="candidateImage">Image URL</label>
+                    <input id="candidateImage" type="text" placeholder="Enter image URL">
+
+                    <label for="candidateBlockchainId">Blockchain Candidate ID</label>
+                    <input id="candidateBlockchainId" type="number" placeholder="Enter candidate ID">
+
+                    <button class="btn" type="submit">Add Candidate</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>Create Election</h3>
+                <br>
+                <form id="electionForm">
+                    <label for="electionTitle">Election Title</label>
+                    <input id="electionTitle" type="text" placeholder="Enter election title">
+
+                    <label for="electionDescription">Description</label>
+                    <input id="electionDescription" type="text" placeholder="Enter description">
+
+                    <label for="electionStartDate">Start Date</label>
+                    <input id="electionStartDate" type="datetime-local">
+
+                    <label for="electionEndDate">End Date</label>
+                    <input id="electionEndDate" type="datetime-local">
+
+                    <button class="btn" type="submit">Create Election</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="card">
+                <h3>Election Controls</h3>
+                <br>
+                <p class="muted-text">Use blockchain and database actions together for election state management.</p>
+                <div class="action-buttons">
+                    <button class="btn green" type="button" onclick="handleOpenElectionFromCurrent()">Start Voting</button>
+                    <button class="btn red" type="button" onclick="handleCloseElectionFromCurrent()">End Voting</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Quick Status</h3>
+                <br>
+                <p class="muted-text">All tables below are loaded dynamically from your backend.</p>
+            </div>
+        </div>
+
+        <div class="card card-table">
+            <h3>Candidate Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Party</th>
+                        <th>Blockchain ID</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="candidateTableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="card card-table">
+            <h3>Election Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="electionTableBody"></tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+<script src="js/app.js"></script>
+<script src="js/contract.js"></script>
+<script src="js/wallet.js"></script>
+<script src="js/candidate.js"></script>
+<script src="js/election.js"></script>
+
+<script>
+    requireAdminLogin();
+
+    const admin = getAdminUser();
+    if (admin) {
+        const adminWelcomeName = document.getElementById("adminWelcomeName");
+        if (adminWelcomeName) {
+            adminWelcomeName.textContent = admin.fullName || "Admin";
+        }
+    }
+
+    async function loadAdminStats() {
+        try {
+            const [usersRes, candidatesRes, votesRes] = await Promise.all([
+                fetch("http://localhost:5000/api/auth/users"),
+                fetch("http://localhost:5000/api/candidates"),
+                fetch("http://localhost:5000/api/votes")
+            ]);
+
+            const usersData = await usersRes.json();
+            const candidatesData = await candidatesRes.json();
+            const votesData = await votesRes.json();
+
+            const totalUsersCount = document.getElementById("totalUsersCount");
+            const totalCandidatesCount = document.getElementById("totalCandidatesCount");
+            const totalVotesCount = document.getElementById("totalVotesCount");
+
+            if (totalUsersCount) totalUsersCount.textContent = usersData.count ?? "-";
+            if (totalCandidatesCount) totalCandidatesCount.textContent = candidatesData.count ?? "-";
+            if (totalVotesCount) totalVotesCount.textContent = votesData.count ?? "-";
+        } catch (error) {
+            console.error("Failed to load admin stats:", error);
+        }
+    }
+
+    async function handleOpenElectionFromCurrent() {
+        try {
+            const current = await fetchCurrentElection();
+            await handleOpenElection(current._id);
+            syncElectionStatusMirror();
+        } catch (error) {
+            showElectionMessage(error.message || "Failed to open current election", "error");
+        }
+    }
+
+    async function handleCloseElectionFromCurrent() {
+        try {
+            const current = await fetchCurrentElection();
+            await handleCloseElection(current._id);
+            syncElectionStatusMirror();
+        } catch (error) {
+            showElectionMessage(error.message || "Failed to close current election", "error");
+        }
+    }
+
+    function syncElectionStatusMirror() {
+        const mainStatus = document.getElementById("currentElectionStatus");
+        const mirror = document.getElementById("currentElectionStatusMirror");
+
+        if (mainStatus && mirror) {
+            mirror.textContent = mainStatus.textContent;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadAdminStats();
+        setTimeout(syncElectionStatusMirror, 400);
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VoteChain | Admin Login</title>
+<style>
+    :root{
+        --primary:#0B3D91;
+        --primary-dark:#072A63;
+        --bg:#F4F7FB;
+        --card:#FFFFFF;
+        --text:#1F2937;
+        --muted:#6B7280;
+        --border:#D1D5DB;
+        --shadow:0 10px 30px rgba(0,0,0,0.08);
+        --danger:#E74C3C;
+        --warning:#F59E0B;
+    }
+
+    *{
+        box-sizing:border-box;
+        margin:0;
+        padding:0;
+    }
+
+    body{
+        font-family:Arial, sans-serif;
+        background:linear-gradient(135deg, #eef4ff 0%, #f7f9fc 100%);
+        color:var(--text);
+        min-height:100vh;
+    }
+
+    .page{
+        min-height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:24px;
+    }
+
+    .card{
+        width:100%;
+        max-width:460px;
+        background:var(--card);
+        border-radius:20px;
+        box-shadow:var(--shadow);
+        border:1px solid var(--border);
+        overflow:hidden;
+    }
+
+    .card-top{
+        background:linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color:white;
+        padding:28px 28px 24px;
+        text-align:center;
+    }
+
+    .card-top h1{
+        font-size:1.9rem;
+        margin-bottom:8px;
+    }
+
+    .card-top p{
+        font-size:0.96rem;
+        color:#dce7ff;
+        line-height:1.5;
+    }
+
+    .card-body{
+        padding:28px;
+    }
+
+    .admin-badge{
+        display:inline-block;
+        background:#fff3cd;
+        color:#8a5a00;
+        border:1px solid #ffe08a;
+        padding:8px 12px;
+        border-radius:999px;
+        font-size:0.86rem;
+        font-weight:700;
+        margin-bottom:20px;
+    }
+
+    .info-box{
+        background:#fff7ed;
+        border:1px solid #fed7aa;
+        color:#9a3412;
+        padding:14px 16px;
+        border-radius:12px;
+        font-size:0.94rem;
+        margin-bottom:22px;
+        line-height:1.5;
+    }
+
+    label{
+        display:block;
+        margin-bottom:8px;
+        font-weight:700;
+        font-size:0.96rem;
+    }
+
+    input{
+        width:100%;
+        padding:13px 14px;
+        border:1px solid var(--border);
+        border-radius:11px;
+        margin-bottom:18px;
+        font-size:1rem;
+        outline:none;
+        transition:0.2s ease;
+    }
+
+    input:focus{
+        border-color:var(--primary);
+        box-shadow:0 0 0 4px rgba(11,61,145,0.08);
+    }
+
+    .btn{
+        width:100%;
+        padding:13px;
+        border:none;
+        border-radius:11px;
+        background:var(--primary);
+        color:white;
+        font-size:1rem;
+        font-weight:700;
+        cursor:pointer;
+        transition:0.25s ease;
+    }
+
+    .btn:hover{
+        background:var(--primary-dark);
+        transform:translateY(-1px);
+    }
+
+    .bottom-links{
+        margin-top:18px;
+        text-align:center;
+        font-size:0.95rem;
+        color:var(--muted);
+    }
+
+    .bottom-links a{
+        color:var(--primary);
+        text-decoration:none;
+        font-weight:700;
+    }
+
+    .small-note{
+        margin-top:14px;
+        text-align:center;
+        color:var(--muted);
+        font-size:0.88rem;
+    }
+
+    .message{
+        display:none;
+        margin-bottom:18px;
+        padding:12px 14px;
+        border-radius:10px;
+        font-size:0.95rem;
+        font-weight:600;
+    }
+
+    .message.success{
+        display:block;
+        background:#dcfce7;
+        color:#166534;
+        border:1px solid #86efac;
+    }
+
+    .message.error{
+        display:block;
+        background:#fee2e2;
+        color:#991b1b;
+        border:1px solid #fca5a5;
+    }
+
+    @media (max-width: 520px){
+        .card-top,
+        .card-body{
+        padding:22px;
+    }
+
+    .card-top h1{
+        font-size:1.6rem;
+    }
+    }
+</style>
+</head>
+<body>
+<div class="page">
+    <div class="card">
+    <div class="card-top">
+        <h1>Admin Login</h1>
+        <p>Access the administration panel to manage elections, candidates, and voting records.</p>
+    </div>
+
+    <div class="card-body">
+        <div class="admin-badge">Administrator Access Only</div>
+
+        <div class="info-box">
+        This page is restricted to authorized administrators. Please sign in using your admin credentials.
+        </div>
+
+        <div id="messageBox" class="message"></div>
+
+        <form id="adminLoginForm">
+            <label for="adminEmail">Admin Email</label>
+            <input id="adminEmail" type="email" placeholder="Enter admin email" required />
+
+            <label for="adminPassword">Password</label>
+            <input id="adminPassword" type="password" placeholder="Enter password" required />
+
+        <button class="btn" type="submit">Login as Admin</button>
+        </form>
+
+        <div class="bottom-links">
+        Return to <a href="login.html">User Login</a>
+        </div>
+
+        <div class="small-note">
+        Demo UI only — backend role validation can be connected later.
+        </div>
+    </div>
+    </div>
+
+    <script>
+    const adminLoginForm = document.getElementById("adminLoginForm");
+    const messageBox = document.getElementById("messageBox");
+
+    adminLoginForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+    const email = document.getElementById("adminEmail").value.trim();
+    const password = document.getElementById("adminPassword").value;
+
+    messageBox.className = "message";
+    messageBox.style.display = "none";
+
+    try {
+        const response = await fetch("http://localhost:5000/api/auth/admin-login", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email,
+            password
+        })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            messageBox.textContent = data.message || "Admin login successful.";
+            messageBox.className = "message success";
+
+            localStorage.setItem("adminUser", JSON.stringify(data.user));
+
+        setTimeout(() => {
+            window.location.href = "admin-dashboard.html";
+        }, 1200);
+        } else {
+            messageBox.textContent = data.message || "Admin login failed.";
+            messageBox.className = "message error";
+        }
+    } catch (error) {
+        messageBox.textContent = "Unable to connect to server.";
+        messageBox.className = "message error";
+    }
+    });
+</script>
+
+</div>
+</body>
+</html>

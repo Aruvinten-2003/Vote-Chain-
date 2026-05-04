@@ -1,0 +1,42 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_20-9b024b11073edf647f40a2b07cac806b2d2852f7",
+  "solcVersion": "0.8.20",
+  "solcLongVersion": "0.8.20+commit.a1b79de6",
+  "compilerType": "solc",
+  "userSourceNameMap": {
+    "contracts/Voting.sol": "project/contracts/Voting.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "shanghai",
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode.linkReferences",
+            "evm.bytecode.object",
+            "evm.bytecode.opcodes",
+            "evm.bytecode.sourceMap",
+            "evm.deployedBytecode.immutableReferences",
+            "evm.deployedBytecode.linkReferences",
+            "evm.deployedBytecode.object",
+            "evm.deployedBytecode.opcodes",
+            "evm.deployedBytecode.sourceMap",
+            "evm.methodIdentifiers"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/Voting.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.20;\n\ncontract Voting {\n    address public admin;\n    bool public votingOpen;\n    uint256 public candidateCount;\n\n    struct Candidate {\n        uint256 id;\n        string name;\n        string party;\n        uint256 voteCount;\n    }\n\n    mapping(uint256 => Candidate) public candidates;\n    mapping(address => bool) public hasVoted;\n\n    event CandidateAdded(uint256 indexed candidateId, string name, string party);\n    event VotingOpened();\n    event VotingClosed();\n    event VoteCast(address indexed voter, uint256 indexed candidateId);\n\n    modifier onlyAdmin() {\n        require(msg.sender == admin, \"Only admin can perform this action\");\n        _;\n    }\n\n    modifier whenVotingOpen() {\n        require(votingOpen, \"Voting is not open\");\n        _;\n    }\n\n    constructor() {\n        admin = msg.sender;\n        votingOpen = false;\n        candidateCount = 0;\n    }\n\n    function addCandidate(string memory _name, string memory _party) public onlyAdmin {\n        require(bytes(_name).length > 0, \"Candidate name is required\");\n        require(bytes(_party).length > 0, \"Candidate party is required\");\n        require(!votingOpen, \"Cannot add candidates while voting is open\");\n\n        candidateCount++;\n\n        candidates[candidateCount] = Candidate({\n            id: candidateCount,\n            name: _name,\n            party: _party,\n            voteCount: 0\n        });\n\n        emit CandidateAdded(candidateCount, _name, _party);\n    }\n\n    function openVoting() public onlyAdmin {\n        require(candidateCount > 0, \"No candidate added\");\n        require(!votingOpen, \"The voting is already open\");\n\n        votingOpen = true;\n        emit VotingOpened();\n    }\n\n    function closeVoting() public onlyAdmin {\n        require(votingOpen, \"Voting is already closed\");\n\n        votingOpen = false;\n        emit VotingClosed();\n    }\n\n    function vote(uint256 _candidateId) public whenVotingOpen {\n        require(!hasVoted[msg.sender], \"You have already voted\");\n        require(_candidateId > 0 && _candidateId <= candidateCount, \"Invalid candidate ID\");\n\n        hasVoted[msg.sender] = true;\n        candidates[_candidateId].voteCount++;\n\n        emit VoteCast(msg.sender, _candidateId);\n    }\n\n    function getCandidate(uint256 _candidateId)\n        public\n        view\n        returns (\n            uint256 id,\n            string memory name,\n            string memory party,\n            uint256 voteCount\n        )\n    {\n        require(_candidateId > 0 && _candidateId <= candidateCount, \"Invalid candidate ID\");\n\n        Candidate memory candidate = candidates[_candidateId];\n        return (\n            candidate.id,\n            candidate.name,\n            candidate.party,\n            candidate.voteCount\n        );\n    }\n\n    function getAllCandidates() public view returns (Candidate[] memory) {\n        Candidate[] memory result = new Candidate[](candidateCount);\n\n        for (uint256 i = 1; i <= candidateCount; i++) {\n            result[i - 1] = candidates[i];\n        }\n\n        return result;\n    }\n\n    function checkIfVoted(address _voter) public view returns (bool) {\n        return hasVoted[_voter];\n    }\n}"
+      }
+    }
+  }
+}

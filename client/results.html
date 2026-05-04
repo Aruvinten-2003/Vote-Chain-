@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VoteChain | Results</title>
+<style>
+    :root{
+        --primary:#0B3D91;
+        --primary-dark:#072A63;
+        --bg:#F4F7FB;
+        --card:#FFFFFF;
+        --text:#1F2937;
+        --muted:#6B7280;
+        --border:#D1D5DB;
+        --shadow:0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;}
+
+    body{
+        font-family:Arial, sans-serif;
+        background:var(--bg);
+        color:var(--text);
+    }
+
+    .navbar{
+        background:white;
+        padding:18px 30px;
+        box-shadow:0 2px 12px rgba(0,0,0,0.05);
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        flex-wrap:wrap;
+        gap:12px;
+    }
+
+    .brand{
+        color:var(--primary);
+        font-size:1.3rem;
+        font-weight:700;
+    }
+
+    .nav-links{
+        display:flex;
+        gap:18px;
+        flex-wrap:wrap;
+    }
+
+    .nav-links a{
+        text-decoration:none;
+        color:var(--text);
+        font-weight:600;
+    }
+
+    .container{
+        width:min(950px, 92%);
+        margin:35px auto;
+    }
+
+    .card{
+        background:white;
+        border-radius:18px;
+        padding:28px;
+        box-shadow:var(--shadow);
+        border:1px solid var(--border);
+    }
+
+    .header{
+        margin-bottom:28px;
+        text-align:center;
+    }
+
+    .header h1{
+        color:var(--primary);
+        margin-bottom:10px;
+    }
+
+    .header p{
+        color:var(--muted);
+        font-weight:600;
+    }
+
+    .message{
+        display:none;
+        margin-bottom:20px;
+        padding:14px 16px;
+        border-radius:12px;
+        font-size:0.95rem;
+        font-weight:600;
+    }
+
+    .message.success{
+        display:block;
+        background:#dcfce7;
+        color:#166534;
+        border:1px solid #86efac;
+    }
+
+    .message.error{
+        display:block;
+        background:#fee2e2;
+        color:#991b1b;
+        border:1px solid #fca5a5;
+    }
+
+    .result-item{
+        margin-bottom:24px;
+    }
+
+    .result-top{
+        display:flex;
+        justify-content:space-between;
+        margin-bottom:10px;
+        font-weight:700;
+        flex-wrap:wrap;
+        gap:10px;
+    }
+
+    .bar{
+        width:100%;
+        height:18px;
+        background:#e5e7eb;
+        border-radius:999px;
+        overflow:hidden;
+    }
+
+    .fill{
+        height:100%;
+        background:linear-gradient(90deg, var(--primary), var(--primary-dark));
+    }
+
+    .meta{
+        margin-top:6px;
+        color:var(--muted);
+        font-size:0.95rem;
+    }
+</style>
+</head>
+<body>
+<div class="navbar">
+    <div class="brand">VoteChain</div>
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="admin-dashboard.html">Admin</a>
+        <a href="voter-dashboard.html">Vote</a>
+    </div>
+</div>
+
+<div class="container">
+    <div id="messageBox" class="message"></div>
+
+    <div class="card">
+        <div class="header">
+            <h1 id="electionTitle">Election Results</h1>
+            <p>
+                Status: <span id="electionStatus">Unknown</span> |
+                Total Votes: <span id="totalVotes">0</span>
+            </p>
+        </div>
+
+        <div id="resultsContainer"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+<script src="js/contract.js"></script>
+<script src="js/results.js"></script>
+</body>
+</html>
